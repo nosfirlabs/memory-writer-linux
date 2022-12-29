@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-int main(int argc, char *argv[]) {
+int main(int argc, char **argv) {
     if (argc < 3) {
         fprintf(stderr, "Usage: %s pid offset [value]\n", argv[0]);
         return 1;
@@ -33,7 +33,10 @@ int main(int argc, char *argv[]) {
 
     if (argc == 3) {
         // Read value from memory
-        char buffer[1024];
+        char* buffer = (char*)malloc(1024 + 1); // Can be extended with realloc
+        if(buffer == NULL) {
+            printf("Error could not allocate memory");
+        }
         ssize_t bytes_read = read(fd, buffer, sizeof(buffer));
         if (bytes_read == -1) {
             perror("Error reading from mem file");
